@@ -16,6 +16,7 @@ public class Doctor {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
+
         @NotNull
         @Size(min = 3, max = 100)
         private String name;
@@ -37,8 +38,13 @@ public class Doctor {
         @Pattern(regexp = "^[0-9]{10}$")
         private String phone;
 
+        // This will create a join table named 'doctor_available_times' with columns:
+        // - doctor_id (foreign key referencing the Doctor table's id)
+        // - startTime (from Schedule embeddable)
+        // - endTime (from Schedule embeddable)
         @ElementCollection
-        private List<String> availableTimes;
+        @CollectionTable(name = "doctor_available_times", joinColumns = @JoinColumn(name = "doctor_id"))
+        private List<Schedule> availableTimes;
 
         public Doctor() {
         }
@@ -91,11 +97,11 @@ public class Doctor {
                 this.phone = phone;
         }
 
-        public List<String> getAvailableTimes() {
+        public List<Schedule> getAvailableTimes() {
                 return availableTimes;
         }
 
-        public void setAvailableTimes(List<String> availableTimes) {
+        public void setAvailableTimes(List<Schedule> availableTimes) {
                 this.availableTimes = availableTimes;
         }
 }

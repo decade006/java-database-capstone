@@ -99,3 +99,10 @@ export function openModal(type) {
     document.getElementById('doctorLoginBtn').addEventListener('click', doctorLoginHandler);
   }
 }
+
+
+// Expose to global for non-module callers (e.g., header button listeners on dashboards)
+if (typeof window !== 'undefined') {
+  // eslint-disable-next-line no-undef
+  window.openModal = openModal;
+}

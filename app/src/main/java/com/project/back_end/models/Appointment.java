@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
+@Table(indexes = @Index(name = "appointment_time_index", columnList = "appointment_time, doctor_id", unique = true))
 public class Appointment {
 
         @Id
