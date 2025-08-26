@@ -3,22 +3,26 @@
 function selectRole(role) {
   setRole(role);
   const token = localStorage.getItem('token');
-
-  if (role === 'admin') {
-    const url = token ? `/adminDashboard?token=${encodeURIComponent(token)}` : '/adminDashboard';
-    window.location.href = url;
-  } else if (role === 'doctor') {
-    const url = token ? `/doctorDashboard?token=${encodeURIComponent(token)}` : '/doctorDashboard';
-    window.location.href = url;
-  } else if (role === 'patient') {
-    window.location.href = '/pages/patientDashboard.html';
-  } else if (role === 'loggedPatient') {
-    window.location.href = '/pages/loggedPatientDashboard.html';
+  if (role === "admin") {
+    if (token) {
+      window.location.href = `/adminDashboard/${token}`;
+    }
+  } if (role === "patient") {
+    window.location.href = "/pages/patientDashboard.html";
+  } else if (role === "doctor") {
+    if (token) {
+      window.location.href = `/doctorDashboard/${token}`;
+    } else if (role === "loggedPatient") {
+      window.location.href = "loggedPatientDashboard.html";
+    }
   }
 }
 
+
 function renderContent() {
-  // Relaxed guard: allow pages to render even when role is missing so header can show login/signup.
-  // Keep this as a placeholder for future per-page checks.
-  return;
+  const role = getRole();
+  if (!role) {
+    window.location.href = "/"; // if no role, send to role selection page
+    return;
+  }
 }

@@ -1,48 +1,68 @@
-// footer.js - dynamic footer renderer
-(function() {
-  function renderFooter() {
-    const mount = document.getElementById('footer');
-    if (!mount) return;
+/*
+  Function to render the footer content into the page
+      Select the footer element from the DOM
+      Set the inner HTML of the footer element to include the footer content
+  This section dynamically generates the footer content for the web page, including the hospital's logo, copyright information, and various helpful links.
 
-    // Use absolute asset path so it works on both static and Thymeleaf pages
-    mount.innerHTML = `
-      <footer class="footer">
-        <div class="footer-container">
-          <div class="footer-logo">
-            <img src="/assets/images/logo/logo.png" alt="Hospital CMS Logo" />
-            <p>© Copyright 2025. All Rights Reserved by Hospital CMS.</p>
-          </div>
-          <div class="footer-links">
-            <div class="footer-column">
-              <h4>Company</h4>
-              <a href="#">About</a>
-              <a href="#">Careers</a>
-              <a href="#">Press</a>
-            </div>
-            <div class="footer-column">
-              <h4>Support</h4>
-              <a href="#">Account</a>
-              <a href="#">Help Center</a>
-              <a href="#">Contact Us</a>
-            </div>
-            <div class="footer-column">
-              <h4>Legals</h4>
-              <a href="#">Terms &amp; Conditions</a>
-              <a href="#">Privacy Policy</a>
-              <a href="#">Licensing</a>
-            </div>
+  1. Insert Footer HTML Content
+
+     * The content is inserted into the `footer` element with the ID "footer" using `footer.innerHTML`.
+     * This is done dynamically via JavaScript to ensure that the footer is properly rendered across different pages.
+
+  2. Create the Footer Wrapper
+
+     * The `<footer>` tag with class `footer` wraps the entire footer content, ensuring that it is styled appropriately.
+
+  3. Create the Footer Container
+
+     * Inside the footer, a container div ensures proper alignment and spacing.
+
+  4-11. Structure links and render footer (see instructions above). 
+
+  Call the renderFooter function to populate the footer in the page
+*/
+
+function renderFooter() {
+    const container = document.getElementById("footer");
+    if (!container) return;
+    container.innerHTML = `
+    <footer class="footer bg-light border-top py-4 mt-5">
+      <div class="container">
+        <div class="row align-items-center mb-3">
+          <div class="col-md-6 d-flex align-items-center">
+            <img src="/assets/images/logo/logo.png" alt="Hospital CMS Logo" width="24" class="me-2">
+            <p class="mb-0">© Copyright 2025. All Rights Reserved by Hospital CMS.</p>
           </div>
         </div>
-      </footer>
-    `;
-  }
+        <div class="row g-3">
+          <div class="col-6 col-md-4">
+            <h5>Company</h5>
+            <ul class="list-unstyled small">
+              <li><a href="#" class="link-secondary text-decoration-none">About</a></li>
+              <li><a href="#" class="link-secondary text-decoration-none">Careers</a></li>
+              <li><a href="#" class="link-secondary text-decoration-none">Press</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-4">
+            <h5>Support</h5>
+            <ul class="list-unstyled small">
+              <li><a href="#" class="link-secondary text-decoration-none">Account</a></li>
+              <li><a href="#" class="link-secondary text-decoration-none">Help Center</a></li>
+              <li><a href="#" class="link-secondary text-decoration-none">Contact Us</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-4">
+            <h5>Legals</h5>
+            <ul class="list-unstyled small">
+              <li><a href="#" class="link-secondary text-decoration-none">Terms & Conditions</a></li>
+              <li><a href="#" class="link-secondary text-decoration-none">Privacy Policy</a></li>
+              <li><a href="#" class="link-secondary text-decoration-none">Licensing</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  `;
+}
 
-  // Expose for possible manual calls, but also auto-render
-  window.renderFooter = renderFooter;
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderFooter);
-  } else {
-    renderFooter();
-  }
-})();
+document.addEventListener("DOMContentLoaded", renderFooter);

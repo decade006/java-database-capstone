@@ -51,3 +51,69 @@
 
    Catch any other errors, alert the user, and return a default empty result
 */
+
+import { API_BASE_URL } from "../config/config.js";
+
+const DOCTOR_API = `${API_BASE_URL}/doctor`;
+
+export async function getDoctors() {
+  try {
+    const res = await fetch(DOCTOR_API, { method: "GET" });
+    if (!res.ok) {
+      console.error("getDoctors failed with status:", res.status);
+      return [];
+    }
+    const data = await res.json();
+    return Array.isArray(data.doctors) ? data.doctors : [];
+  } catch (err) {
+    console.error("Error in getDoctors:", err);
+    return [];
+  }
+}
+
+export async function deleteDoctor(id, token) {
+  try {
+    const res = await fetch(`${DOCTOR_API}/${id}/${token}`, { method: "DELETE" });
+    const data = await res.json().catch(() => ({ message: "Unexpected response" }));
+    return { success: res.ok, message: data.message || (res.ok ? "Deleted" : "Failed to delete") };
+  } catch (err) {
+    console.error("Error in deleteDoctor:", err);
+    return { success: false, message: "Network error" };
+  }
+}
+
+export async function saveDoctor(doctor, token) {
+  try {
+    const res = await fetch(`${DOCTOR_API}/${token}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(doctor)
+    });
+    const data = await res.json().catch(() => ({ message: "Unexpected response" }));
+    return { success: res.ok, message: data.message || (res.ok ? "Saved" : "Failed to save") };
+  } catch (err) {
+    console.error("Error in saveDoctor:", err);
+    return { success: false, message: "Network error" };
+  }
+}
+
+export async function filterDoctors(name, time, speciality) {
+  try {
+    // fallback to 'null' for API which expects path variables
+    const n = name && name.length ? name : "null";
+    const t = time && time.length ? time : "null";
+    const s = speciality && speciality.length ? speciality : "null";
+    const res = await fetch(`${DOCTOR_API}/filter/${encodeURIComponent(n)}/${encodeURIComponent(t)}/${encodeURIComponent(s)}`);
+    if (res.ok) {
+      const data = await res.json();
+      return data;
+    } else {
+      console.error("filterDoctors failed:", res.status, res.statusText);
+      return { doctors: [] };
+    }
+  } catch (err) {
+    console.error("Error in filterDoctors:", err);
+    alert("Something went wrong!");
+    return { doctors: [] };
+  }
+}

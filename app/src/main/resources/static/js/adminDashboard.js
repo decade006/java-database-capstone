@@ -70,3 +70,98 @@
 
     If saving fails, show an error message
 */
+
+import { getDoctors, filterDoctors, saveDoctor } from "./services/doctorServices.js";
+import { createDoctorCard } from "./components/doctorCard.js";
+import { openModal } from "./components/modals.js";
+
+// Load initial list and attach listeners
+window.addEventListener("DOMContentLoaded", () => {
+  const addBtn = document.getElementById("addDocBtn");
+  if (addBtn) addBtn.addEventListener("click", () => openModal("addDoctor"));
+
+  const searchBar = document.getElementById("searchBar");
+  const filterTime = document.getElementById("filterTime");
+  const filterSpecialty = document.getElementById("filterSpecialty");
+  if (searchBar) searchBar.addEventListener("input", filterDoctorsOnChange);
+  if (filterTime) filterTime.addEventListener("change", filterDoctorsOnChange);
+  if (filterSpecialty) filterSpecialty.addEventListener("change", filterDoctorsOnChange);
+
+  loadDoctorCards();
+});
+
+async function loadDoctorCards() {
+  try {
+    const doctors = await getDoctors();
+    renderDoctorCards(doctors);
+  } catch (e) {
+    console.error("Failed to load doctors:", e);
+  }
+}
+
+function filterDoctorsOnChange() {
+  const searchBar = document.getElementById("searchBar");
+  const filterTime = document.getElementById("filterTime");
+  const filterSpecialty = document.getElementById("filterSpecialty");
+
+  const name = searchBar && searchBar.value.trim().length > 0 ? searchBar.value.trim() : null;
+  const time = filterTime && filterTime.value.length > 0 ? filterTime.value : null;
+  const specialty = filterSpecialty && filterSpecialty.value.length > 0 ? filterSpecialty.value : null;
+
+  filterDoctors(name, time, specialty)
+    .then((response) => {
+      const doctors = response.doctors || [];
+      renderDoctorCards(doctors);
+      if (!doctors.length) {
+        const contentDiv = document.getElementById("content");
+        if (contentDiv) contentDiv.innerHTML = "<p>No doctors found with the given filters.</p>";
+      }
+    })
+    .catch((error) => {
+      console.error("Failed to filter doctors:", error);
+      alert("❌ An error occurred while filtering doctors.");
+    });
+}
+
+export function renderDoctorCards(doctors) {
+  const contentDiv = document.getElementById("content");
+  if (!contentDiv) return;
+  contentDiv.innerHTML = "";
+  doctors.forEach((doctor) => {
+    const card = createDoctorCard(doctor);
+    contentDiv.appendChild(card);
+  });
+}
+
+// Expose for modal save action
+window.adminAddDoctor = async function adminAddDoctor() {
+  const name = document.getElementById("doctorName")?.value?.trim();
+  const email = document.getElementById("doctorEmail")?.value?.trim();
+  const password = document.getElementById("doctorPassword")?.value?.trim();
+  const phone = document.getElementById("doctorPhone")?.value?.trim();
+  const specialty = document.getElementById("specialization")?.value?.trim();
+
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Unauthorized. Please log in as admin.");
+    return;
+  }
+
+  const selected = Array.from(document.querySelectorAll('input[name="availability"]:checked'))
+    .map((c) => c.value);
+  const availableTimes = selected.map((range) => {
+    const [start, end] = range.split("-");
+    const startTime = start.length === 5 ? `${start}:00` : start;
+    const endTime = end.length === 5 ? `${end}:00` : end;
+    return { startTime, endTime };
+  });
+
+  const doctor = { name, email, password, phone, specialty, availableTimes };
+
+  const { success, message } = await saveDoctor(doctor, token);
+  alert(message);
+  if (success) {
+    document.getElementById("modal").style.display = "none";
+    window.location.reload();
+  }
+};

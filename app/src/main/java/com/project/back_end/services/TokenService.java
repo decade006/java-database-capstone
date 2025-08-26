@@ -58,6 +58,7 @@ public class TokenService {
         }
 
         public boolean validateToken(String token, String role) {
+                if (token == null) return false;
                 try {
                         String subject = extractEmail(token);
                         if (subject == null || subject.isBlank()) return false;
