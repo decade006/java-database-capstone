@@ -1,5 +1,6 @@
 use cms;
 
+show tables;
 
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE appointment;
