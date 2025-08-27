@@ -56,3 +56,63 @@
     - Log the error to the console
     - Show a generic error message
 */
+
+import { openModal } from "../components/modals.js";
+import { API_BASE_URL } from "../config/config.js";
+
+const ADMIN_API = `${API_BASE_URL}/admin/login`;
+const DOCTOR_API = `${API_BASE_URL}/doctor/login`;
+
+window.addEventListener("load", () => {
+  const adminBtn = document.getElementById("adminLogin");
+  const doctorBtn = document.getElementById("doctorLogin");
+  const patientBtn = document.getElementById("patientRole");
+
+  if (adminBtn) adminBtn.addEventListener("click", () => openModal("adminLogin"));
+  if (doctorBtn) doctorBtn.addEventListener("click", () => openModal("doctorLogin"));
+  if (patientBtn) patientBtn.addEventListener("click", () => selectRole("patient"));
+});
+
+window.adminLoginHandler = async function () {
+  try {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const res = await fetch(ADMIN_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      alert(data.message || "Invalid credentials");
+      return;
+    }
+    localStorage.setItem("token", data.token);
+    selectRole("admin");
+  } catch (err) {
+    console.error("Admin login error:", err);
+    alert("Something went wrong. Please try again.");
+  }
+};
+
+window.doctorLoginHandler = async function () {
+  try {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const res = await fetch(DOCTOR_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      alert(data.message || "Invalid credentials");
+      return;
+    }
+    localStorage.setItem("token", data.token);
+    selectRole("doctor");
+  } catch (err) {
+    console.error("Doctor login error:", err);
+    alert("Something went wrong. Please try again.");
+  }
+};

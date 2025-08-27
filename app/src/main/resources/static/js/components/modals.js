@@ -99,3 +99,7 @@ export function openModal(type) {
     document.getElementById('doctorLoginBtn').addEventListener('click', doctorLoginHandler);
   }
 }
+
+
+// Make openModal available for inline handlers and other modules
+window.openModal = openModal;

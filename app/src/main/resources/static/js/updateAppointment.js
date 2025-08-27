@@ -36,14 +36,27 @@ async function initializePage() {
       document.getElementById("patientName").value = patientName || "You";
       document.getElementById("doctorName").value = doctorName;
       document.getElementById("appointmentDate").value = appointmentDate;
-      document.getElementById("appointmentTime").value = appointmentTime;
 
       const timeSelect = document.getElementById("appointmentTime");
-      doctor.availableTimes.forEach(time => {
-        const option = document.createElement("option");
-        option.value = time;
-        option.textContent = time;
-        timeSelect.appendChild(option);
+      timeSelect.innerHTML = "<option value=''>Select time</option>";
+
+      // Normalize doctor's availableTimes to strings like "HH:mm-HH:mm"
+      const slots = (doctor.availableTimes || []).map((s) => {
+        if (typeof s === "string") return s;
+        const st = (s?.startTime || "").toString().slice(0, 5);
+        const et = (s?.endTime || "").toString().slice(0, 5);
+        return st && et ? `${st}-${et}` : null;
+      }).filter(Boolean);
+
+      // Build options and preselect current one if it matches
+      slots.forEach((time) => {
+        const opt = document.createElement("option");
+        opt.value = time;
+        opt.textContent = time;
+        if (appointmentTime && time.includes(appointmentTime)) {
+          opt.selected = true;
+        }
+        timeSelect.appendChild(opt);
       });
 
       // Handle form submission for updating the appointment

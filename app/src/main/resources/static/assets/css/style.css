@@ -22,7 +22,7 @@
   }
   
   .logo-img {
-    height: 40px;
+    height: 24px;
     width: auto;
     max-width: 100%;
     object-fit: contain;
@@ -66,7 +66,7 @@
     }
   
     .logo-img {
-      height: 30px;
+      height: 20px;
     }
   
     .logo-title {
@@ -240,10 +240,8 @@
   
 
   #content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(315px, 1fr));
-    gap: 40px;
-    padding: 20px;
+    /* Legacy CSS grid removed to allow Bootstrap row/col layout to control spacing */
+    padding: 0;
   }
 
   .doctor-card {
@@ -313,11 +311,12 @@
   }
 
   .searchBar{
-    height: 30px;
-    padding:20px;
-    font-size: 16px;
-    margin-bottom: 30px;
-    border: 0.2px solid grey;
+    height: auto;
+    padding: .375rem .75rem; /* align with Bootstrap form-control */
+    font-size: 1rem;
+    margin-bottom: 0;
+    border: 1px solid #ced4da;
+    box-sizing: border-box;
 }
 
   .searchBar:focus{
@@ -336,16 +335,18 @@
 .filter-select {
   margin-right: 8px;
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: .375rem 2.25rem .375rem .75rem; /* match Bootstrap .form-select */
+  border: 1px solid #ced4da;
+  border-radius: .375rem;
   background-color: #fff;
-  color: #333;
-  font-size: 14px;
-  background-position: right 10px center;
+  color: #212529;
+  font-size: 1rem;
+  line-height: 1.5;
+  background-position: right .75rem center;
   background-size: 16px 16px;
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  box-sizing: border-box;
 }
 
 .filter-select:focus {
@@ -380,3 +381,26 @@
   accent-color: #015c5db8; 
 }
 
+
+
+/* ---- Layout: Sticky footer across pages ---- */
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0; /* remove default margins that can create gaps */
+}
+/* wrapper holds header, main, footer on each page */
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+/* main grows to push footer down when content is short */
+.main-content {
+  flex: 1 0 auto;
+}
+/* the flex child that contains the footer markup */
+#footer {
+  margin-top: auto;
+}
